@@ -1,0 +1,107 @@
+<html>
+    <head>
+        <title>POSシステム</title>
+
+        <script>
+            window.onload = function() {
+                eel.getMenu();
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>POSシステム</h1>
+        <p>
+            いらっしゃいませ！<BR>
+            今日は何にしますか？<BR>
+        </p>
+        <p>
+            <div id="menu"></div>
+        </p>
+        <p>
+            <p>こちらに注文する商品コードと数量を入力してください。</p>
+            <p>商品コード：<input type="text" id="code"></p>
+            <p>数量：<input type="text" id="kazu"></p>
+            <button id = "order">注文</button>
+        </p>
+        <p>
+            <div id="kakunin"></div>
+        </p>
+        <p>
+            <p>いくら払いますか？</p>
+            <p><input type="text" id="oazukari"> 円</p>
+            <button id = "shiharau">支払う</button><input type="checkbox" id="receipt" value="1" checked="checked">領収書ください
+        </p>
+        <p>
+            <div id="oturi"></div>
+        </p>
+        <script type="text/javascript" src="./eel.js"></script>
+        <script>
+            function OnLinkClick(text) {
+                code.value = text;
+            }
+
+            // 注文ボタン
+            order.addEventListener('click', () => {
+                wrk_code = code.value;
+                wrk_kazu = kazu.value;
+                
+                if(wrk_code.length == 0){
+                    alert("商品コードを入力してください。");
+                }else{
+                    if(wrk_kazu.length == 0){
+                        alert("数量を入力してください。");
+                    }else{
+                        if(isNaN(wrk_kazu)){
+                            alert("数量には数値を入力してください。");
+                        }else{
+                            // 注文する
+                            eel.addOrder(wrk_code,wrk_kazu);                            
+                        }
+                    }
+                }
+            });
+
+            // 支払うボタン
+            shiharau.addEventListener('click', () => {
+                var wrk_oazukari = oazukari.value;
+                
+                if(wrk_oazukari.length == 0){
+                    alert("支払う金額を入力してください。");
+                }else{
+                    if(isNaN(wrk_oazukari)){
+                        alert("金額には数値を入力してください。");
+                    }else{
+                        // おつりを計算する
+                        eel.getOturi(wrk_oazukari);
+                    }
+
+                    if(receipt.checked){
+                        // 領収書を発行する
+                        eel.createReceipt();
+                    }
+                }
+            });
+
+            eel.expose(view_menu_js)
+            function view_menu_js(text){
+                menu.innerHTML = text;
+            }
+
+            eel.expose(view_kakunin_js)
+            function view_kakunin_js(text){
+                kakunin.innerHTML = text;
+            }
+
+            eel.expose(view_oturi_js)
+            function view_oturi_js(text){
+                oturi.innerHTML = text;
+            }           
+
+            eel.expose(view_err_js)
+            function view_err_js(){
+                alert("CSVファイルは見つかりませんでした。");
+            }
+        </script>
+    </body>
+</html>
